@@ -18,13 +18,7 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Download and Install SonarScanner
-        run: |
-          curl -OL https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-          export PATH=$PWD/sonar-scanner-4.6.2.2472-linux/bin:$PATH
-
       - name: Run SonarCloud Scan
-        run: sonar-scanner
+        run: docker run --rm -e SONAR_TOKEN="e43df0134726f2cda2df906eaf2577f14aad7300" -v "${PWD}:/usr/src" sonarsource/sonar-scanner-cli
         env:
           SONARCLOUD_TOKEN: e43df0134726f2cda2df906eaf2577f14aad7300
