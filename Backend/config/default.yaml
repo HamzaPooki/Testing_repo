@@ -1,0 +1,16 @@
+User:
+  dbConfig:
+    HOST: 18.198.242.213
+    USER: bn_wordpress
+    PASSWORD: 751221a133
+    DB: bitnami_wordpress
+  keyConfig:
+    key: psas_k3y
+  hostConfig:
+    host: https://demo.pookidevs.com
+  prefixConfig:
+    prefix: 'wp'
+  tableConfig:
+    table: psas
+  wordPressConfig:
+    wordPress: https://pookidevs.com
