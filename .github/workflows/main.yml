@@ -18,7 +18,21 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Run SonarCloud Scan
-        run: docker run --rm -e SONAR_TOKEN="e43df0134726f2cda2df906eaf2577f14aad7300" -v "${PWD}:/usr/src" sonarsource/sonar-scanner-cli
-        env:
-          SONARCLOUD_TOKEN: e43df0134726f2cda2df906eaf2577f14aad7300
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Get SonarCloud Issues
+        id: get_issues
+        run: |
+          export SONARCLOUD_PROJECT_KEY=Testing_repo
+          export SONARCLOUD_ORGANIZATION=hamzapooki
+          export SONARCLOUD_API_TOKEN=e43df0134726f2cda2df906eaf2577f14aad7300
+
+          # Fetch the list of issues using the SonarCloud API
+          curl -u $SONARCLOUD_API_TOKEN: \
+            "https://sonarcloud.io/api/issues/search?componentKeys=$SONARCLOUD_PROJECT_KEY&organization=$SONARCLOUD_ORGANIZATION" \
+            > issues.json
+
+      - name: Send Issues to Slack
+        run: |
+          jq -r '.issues[] | "curl -X POST -H \"Content-type: application/json\" --data \\\"{\\\\\"text\\\\\": \\\\\\\"New SonarCloud Issue Detected!\\\\nIssue Key: \(.key)\\\\nSeverity: \(.severity)\\\\nMessage: \(.message)\\\\nSee the details here: \(.url)\\\\\"}\" https://hooks.slack.com/services/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"' < issues.json | sh
