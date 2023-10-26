@@ -19,7 +19,15 @@ jobs:
           node-version: '14'
 
       - name: Install Dependencies
-        run: npm install
+        run: 
+          cd Backend
+          npm install
+
+      - name: Download and Install SonarScanner
+        run: |
+          curl -OL https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
+          export PATH=$PWD/sonar-scanner-4.6.2.2472-linux/bin:$PATH
 
       - name: Run SonarCloud Scan
         run: sonar-scanner
