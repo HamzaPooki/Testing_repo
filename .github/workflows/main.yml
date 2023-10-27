@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,18 +17,13 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Get SonarCloud Issues
-        id: get_issues
-        run: |
-          export SONARCLOUD_PROJECT_KEY=Testing_repo
-          export SONARCLOUD_ORGANIZATION=hamzapooki
-          export SONARCLOUD_API_TOKEN=e43df0134726f2cda2df906eaf2577f14aad7300
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: AKIASSSRAFRPKMRUU46H
+          aws-secret-access-key: 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
+          aws-region: eu-central-1
 
-          # Fetch the list of issues using the SonarCloud API
-          curl -u $SONARCLOUD_API_TOKEN: \
-            "https://sonarcloud.io/api/issues/search?componentKeys=$SONARCLOUD_PROJECT_KEY&organization=$SONARCLOUD_ORGANIZATION" \
-            > issues.json
-
-      - name: Send Issues to Slack
+      - name: Invoke Lambda Function
         run: |
-          jq -r '.issues[] | "curl -X POST -H \"Content-type: application/json\" --data \\\"{\\\\\"text\\\\\": \\\\\\\"New SonarCloud Issue Detected!\\\\nIssue Key: \(.key)\\\\nSeverity: \(.severity)\\\\nMessage: \(.message)\\\\nSee the details here: \(.url)\\\\\"}\" https://hooks.slack.com/services/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"' < issues.json | sh
+          aws lambda invoke --function-name SonarCloud_AWS_Integration response.json
