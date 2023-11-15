@@ -15,17 +15,17 @@ jobs:
 
       - name: Install ZAP
         run: |
-          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Crossplatform.zip
-          unzip ZAP_2.11.0_Crossplatform.zip
-          sudo cp -r ZAP_2.11.0 /opt/
+          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Linux.tar.gz
+          tar -xzf ZAP_2.11.0_Linux.tar.gz
+          sudo mv ZAP_2.11.0 /opt/
           export PATH=$PATH:/opt/ZAP_2.11.0
 
       - name: Start ZAP
-        run: zap.sh -daemon -port 8090 -config api.disablekey=true
+        run: /opt/ZAP_2.11.0/zap.sh -daemon -port 8090 -config api.disablekey=true
 
       - name: Run ZAP Security Scan
         run: |
           export ZAP_API_URL=http://localhost:8090
-          export ZAP_API_KEY=$(curl -sX POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"api_key":"","api_user":"","credentials":[{"username":"admin","password":"admin"}]}' $ZAP_API_URL/JSON/core/action/autentication/set/ -o - | jq -r '.api_key'
+          export ZAP_API_KEY=$(curl -sX POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"api_key":"","api_user":"","credentials":[{"username":"admin","password":"admin"}]}' $ZAP_API_URL/JSON/core/action/autentication/set/ -o - | jq -r '.api_key')
           # Replace the following command with the appropriate build and test steps for your project
           # Example: npm install && npm test
