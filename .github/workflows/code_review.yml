@@ -26,42 +26,7 @@ jobs:
             cd Backend
             ls
             npm audit --json
-
             ls
             audit_result=$(npm audit --json)
             ls
-            # audit_result=$(npm audit --json)
-
-            echo $audit_result
-            
-            VULNERABILITIES_COUNT=$(echo "$audit_result" | jq '.metadata.vulnerabilities.total')
-            
-            # Check if there are vulnerabilities
-            if [[ $VULNERABILITIES_COUNT == 0 ]]; then
-              echo "No Vulnerabilities Found."
-            else
-              # Fix vulnerabilities
-              npm audit fix
-            
-              # Run npm audit again
-              audit_result_after_fix=$(npm audit --json)
-            
-              VULNERABILITIES_COUNT=$(echo "$audit_result_after_fix" | jq '.metadata.vulnerabilities.total')
-            
-              # Check if there are still vulnerabilities
-              if [[ $VULNERABILITIES_COUNT == 0 ]]; then
-                echo "Vulnerabilities Fixed."
-              else
-                SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
-                VULNERABILITIES_COUNT=$(echo "$audit_result_after_fix" | jq '.metadata.vulnerabilities.total')
-
-                echo $VULNERABILITIES_COUNT
-                
-                curl -X POST -H 'Content-type: application/json' \
-                  --data "{
-                    \"text\": \"*Vulnerabilities Found*\nTotal: $VULNERABILITIES_COUNT\",
-                  }" \
-                  "$SLACK_WEBHOOK_URL"
-              fi
-            fi
     
