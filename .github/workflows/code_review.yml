@@ -24,8 +24,9 @@ jobs:
       - name: Check for Vulnerabilities
         run: |
             cd Backend
-            ls
             audit_result=$(npm audit --json)
+
+            echo $audit_result
             
             VULNERABILITIES_COUNT=$(echo "$audit_result" | jq '.metadata.vulnerabilities.total')
             
