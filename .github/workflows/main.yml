@@ -1,4 +1,4 @@
-name: Security Scan
+name: Dependency Check
 
 on:
   push:
@@ -13,18 +13,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
         with:
-          node-version: 14
+          distribution: 'adopt'
+          java-version: '11'
 
-      - name: Security Scan with Snyk
-        run: 
-          npm install -g snyk
-          snyk test --json > snyk-report.json
+      - name: Run OWASP Dependency-Check
+        run: |
+          wget https://dl.bintray.com/jeremy-long/owasp/dependency-check-6.1.6-release.zip
+          unzip -qq dependency-check-6.1.6-release.zip
+          cd dependency-check/bin
+          ./dependency-check.sh --scan . --format "ALL" --project "MyProject" --out /github/workspace
 
-      - name: Upload Snyk Results
+      - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v2
         with:
-          name: snyk-report
-          path: snyk-report.json
+          name: dependency-check-report
+          path: dependency-check-report.html
