@@ -23,6 +23,7 @@ jobs:
 
       - name: Check for Vulnerabilities
         run: |
+            cd Backend
             ls
             audit_result=$(npm audit --json)
             
