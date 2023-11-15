@@ -1,1 +1,44 @@
+name: Code Review Workflow
 
+on:
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  checking_vulnerabilities:                                            
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkout the Github Repository
+        run: |
+            sudo apt-get jq
+
+            cd Backend
+            
+            audit_result=$(npm audit --json)
+            
+            VULNERABILITIES_COUNT=$(echo "$audit_result" | jq '.metadata.vulnerabilities.total')
+            
+            # Check if there are vulnerabilities
+            if [[ $VULNERABILITIES_COUNT == 0 ]]; then
+              echo "No Vulnerabilities Found."
+            else
+              # Fix vulnerabilities
+              npm audit fix
+            
+              # Run npm audit again
+              audit_result_after_fix=$(npm audit --json)
+            
+              VULNERABILITIES_COUNT=$(echo "$audit_result_after_fix" | jq '.metadata.vulnerabilities.total')
+            
+              # Check if there are still vulnerabilities
+              if [[ $VULNERABILITIES_COUNT == 0 ]]; then
+                echo "Vulnerabilities Fixed."
+              else
+                echo -e "Vulnerabilities Found \nTotal: $VULNERABILITIES_COUNT"
+                exit 1
+              fi
+            fi
+    
