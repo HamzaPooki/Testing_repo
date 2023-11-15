@@ -19,7 +19,9 @@ jobs:
           node-version: 14
 
       - name: Security Scan with Snyk
-        run: snyk test --json > snyk-report.json
+        run: 
+          npm install -g snyk
+          snyk test --json > snyk-report.json
 
       - name: Upload Snyk Results
         uses: actions/upload-artifact@v2
