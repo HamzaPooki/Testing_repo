@@ -15,13 +15,30 @@ jobs:
 
     - name: Install Trivy
       run: |
-        wget https://github.com/aquasecurity/trivy/releases/download/v0.20.0/trivy_0.20.0_Linux-64bit.tar.gz
-        tar zxvf trivy_0.20.0_Linux-64bit.tar.gz
+name: Trivy Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trivy_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Trivy
+      run: |
+        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_$(uname -m).tar.gz
+        tar zxvf trivy_$(uname -s)_$(uname -m).tar.gz
         sudo mv trivy /usr/local/bin/
 
     - name: Run Trivy Scan
       run: |
-        trivy --ignore-unfixed --severity HIGH,CRITICAL --exit-code 1 ${{ github.workspace }}
+        trivy --ignore-unfixed --severity HIGH,CRITICAL --exit-code .  # point to the directory where your source code is
 
     - name: Handle Trivy Results
       if: failure()
