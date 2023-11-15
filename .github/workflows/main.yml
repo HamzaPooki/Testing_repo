@@ -19,12 +19,15 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
+      - name: Download Dependency-Check
+        run: |
+          curl -L -o dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/download/7.2.1/dependency-check-7.2.1-release.zip
+          unzip -qq dependency-check.zip
+          chmod +x dependency-check/bin/dependency-check.sh
+
       - name: Run OWASP Dependency-Check
         run: |
-          wget https://dl.bintray.com/jeremy-long/owasp/dependency-check-6.1.6-release.zip
-          unzip -qq dependency-check-6.1.6-release.zip
-          cd dependency-check/bin
-          ./dependency-check.sh --scan . --format "ALL" --project "MyProject" --out /github/workspace
+          ./dependency-check/bin/dependency-check.sh --scan . --format "ALL" --project "MyProject" --out /github/workspace
 
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v2
