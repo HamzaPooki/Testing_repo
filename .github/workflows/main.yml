@@ -1,4 +1,4 @@
-name: Dependency-Check Security Scan
+name: ZAP Security Scan
 
 on:
   push:
@@ -6,18 +6,34 @@ on:
       - main
 
 jobs:
-  dependency-check:
+  zap_scan:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v2
+
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: '11'
-      - name: Run Dependency-Check
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Install ZAP
         run: |
-          wget https://dl.bintray.com/jeremy-long/owasp/dependency-check-6.0.3-release.zip
-          unzip dependency-check-*.zip
-          cd dependency-check-*
-          ./bin/dependency-check.sh --scan .
+          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Crossplatform.zip
+          unzip ZAP_2.11.0_Crossplatform.zip
+          sudo cp -r ZAP_2.11.0 /opt/
+          export PATH=$PATH:/opt/ZAP_2.11.0
+
+      - name: Start ZAP
+        run: zap.sh -daemon -port 8090 -config api.disablekey=true
+
+      - name: Run ZAP Security Scan
+        run: |
+          export ZAP_API_URL=http://localhost:8090
+          export ZAP_API_KEY=$(curl -sX POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"api_key":"","api_user":"","credentials":[{"username":"admin","password":"admin"}]}' $ZAP_API_URL/JSON/core/action/autentication/set/ -o - | jq -r '.api_key')
+          mvn -P zap-security-test verify
