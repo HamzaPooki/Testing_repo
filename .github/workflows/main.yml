@@ -1,4 +1,4 @@
-name: Dependency Check
+name: CodeQL Analysis
 
 on:
   push:
@@ -6,31 +6,23 @@ on:
       - main
 
 jobs:
-  security-scan:
+  analyze:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        language:
+          - nodejs
+          - typescript
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Java
-        uses: actions/setup-java@v2
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+
+      - name: Build and analyze
+        uses: github/codeql-action/analyze@v1
         with:
-          distribution: 'adopt'
-          java-version: '11'
-
-      - name: Download Dependency-Check
-        run: |
-          curl -L -o dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/download/7.2.1/dependency-check-7.2.1-release.zip
-          unzip -qq dependency-check.zip
-          chmod +x dependency-check/bin/dependency-check.sh
-
-      - name: Run OWASP Dependency-Check
-        run: |
-          ./dependency-check/bin/dependency-check.sh --scan . --format "ALL" --project "MyProject" --out /github/workspace
-
-      - name: Upload Dependency-Check Report
-        uses: actions/upload-artifact@v2
-        with:
-          name: dependency-check-report
-          path: dependency-check-report.html
+          language: ${{ matrix.language }}
