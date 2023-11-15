@@ -1,4 +1,4 @@
-name: CodeQL Analysis
+name: Dependency-Check Security Scan
 
 on:
   push:
@@ -6,24 +6,18 @@ on:
       - main
 
 jobs:
-  analyze:
-    permissions: write-all
+  dependency-check:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        language:
-          - nodejs
-          - typescript
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-
-      - name: Build and analyze
-        uses: github/codeql-action/analyze@v2
+        uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
-          language: ${{ matrix.language }}
+          java-version: '11'
+      - name: Run Dependency-Check
+        run: |
+          wget https://dl.bintray.com/jeremy-long/owasp/dependency-check-6.0.3-release.zip
+          unzip dependency-check-*.zip
+          cd dependency-check-*
+          ./bin/dependency-check.sh --scan .
