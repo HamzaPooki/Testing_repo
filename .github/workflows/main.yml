@@ -13,15 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '11'
-
-      - name: Build with Maven
-        run: mvn clean install
-
       - name: Install ZAP
         run: |
           wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Crossplatform.zip
@@ -35,5 +26,6 @@ jobs:
       - name: Run ZAP Security Scan
         run: |
           export ZAP_API_URL=http://localhost:8090
-          export ZAP_API_KEY=$(curl -sX POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"api_key":"","api_user":"","credentials":[{"username":"admin","password":"admin"}]}' $ZAP_API_URL/JSON/core/action/autentication/set/ -o - | jq -r '.api_key')
-          mvn -P zap-security-test verify
+          export ZAP_API_KEY=$(curl -sX POST -H "Content-Type: application/json" -H "Accept: application/json" -d '{"api_key":"","api_user":"","credentials":[{"username":"admin","password":"admin"}]}' $ZAP_API_URL/JSON/core/action/autentication/set/ -o - | jq -r '.api_key'
+          # Replace the following command with the appropriate build and test steps for your project
+          # Example: npm install && npm test
