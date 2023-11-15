@@ -1,4 +1,4 @@
-name: CodeQL Analysis
+name: Security Scan
 
 on:
   push:
@@ -6,22 +6,26 @@ on:
       - main
 
 jobs:
-  codeql-analysis:
+  security-scan:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up CodeQL
-        uses: github/codeql-action/setup@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          languages: <language> # Specify the language of your project (e.g., 'javascript')
+          node-version: 14
 
-      - name: Build CodeQL Database
-        uses: github/codeql-action/autobuild@v1
+      - name: Install Dependencies
+        run: npm ci
 
-      - name: Run CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+      - name: Security Scan with Snyk
+        run: snyk test --json > snyk-report.json
+
+      - name: Upload Snyk Results
+        uses: actions/upload-artifact@v2
         with:
-          database-uri: ${{ secrets.CODEQL_DATABASE_URI }}
+          name: snyk-report
+          path: snyk-report.json
