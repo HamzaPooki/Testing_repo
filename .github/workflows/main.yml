@@ -14,13 +14,7 @@ jobs:
       - name: Set up CodeQL
         uses: github/codeql-action/setup@v2
         with:
-          languages: javascript,java  # Adjust based on your project's language
-      - name: Build and Test
-        run: |
-          # Add your build and test commands here
-          # Example for a Node.js project:
-          npm install
-          npm test
+          languages: javascript  # Adjust based on your project's language
       - name: Run CodeQL Analysis
         env:
           CODEQL_ACTION_TOKEN: ${{ secrets.PAT_TOKEN }}
