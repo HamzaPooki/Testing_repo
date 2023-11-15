@@ -25,7 +25,9 @@ jobs:
         run: |
             cd Backend
             ls
-            npm audit --fix
+            npm install
+            ls
+            npm audit
             ls
         continue-on-error: true
     
