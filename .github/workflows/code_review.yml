@@ -24,10 +24,7 @@ jobs:
       - name: Check for Vulnerabilities
         run: |
             cd Backend
-            ls
-            npm install
-            ls
-            npm audit
-            ls
-        continue-on-error: true
+            npm audit --json > audit-results.json
+            cat audit-results.json
+            echo "HELLO"
     
