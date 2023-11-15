@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
       - name: Checkout the Github Repository
-        run: |
-            sudo apt-get jq
+        uses: actions/checkout@v3
 
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Check for Vulnerabilities
+        run: |
             cd Backend
             
             audit_result=$(npm audit --json)
