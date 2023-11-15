@@ -11,14 +11,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        
       - name: Set up CodeQL
         uses: github/codeql-action/setup@v2
         with:
           languages: javascript  # Adjust based on your project's language
+          
       - name: Run CodeQL Analysis
         env:
           CODEQL_ACTION_TOKEN: ${{ secrets.PAT_TOKEN }}
         uses: github/codeql-action/analyze@v2
+        
       - name: Upload Results
         uses: actions/upload-artifact@v2
         with:
