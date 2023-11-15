@@ -1,4 +1,4 @@
-name: Trivy Scan
+name: CodeQL Analysis
 
 on:
   push:
@@ -6,23 +6,22 @@ on:
       - main
 
 jobs:
-  trivy_scan:
+  codeql-analysis:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Install Trivy
-      run: |
-        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_$(uname -m).tar.gz
-        tar zxvf trivy_$(uname -s)_$(uname -m).tar.gz
-        sudo mv trivy /usr/local/bin/
+      - name: Set up CodeQL
+        uses: github/codeql-action/setup@v1
+        with:
+          languages: <language> # Specify the language of your project (e.g., 'javascript')
 
-    - name: Run Trivy Scan
-      run: |
-        trivy --ignore-unfixed --severity HIGH,CRITICAL --exit-code .  # point to the directory where your source code is
+      - name: Build CodeQL Database
+        uses: github/codeql-action/autobuild@v1
 
-    - name: Handle Trivy Results
-      if: failure()
-      run: echo "Vulnerabilities found. Please review the Trivy scan results."
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+        with:
+          database-uri: ${{ secrets.CODEQL_DATABASE_URI }}
