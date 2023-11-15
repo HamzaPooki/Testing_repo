@@ -23,6 +23,7 @@ jobs:
 
       - name: Check for Vulnerabilities
         run: |
+            ls
             audit_result=$(npm audit --json)
             
             VULNERABILITIES_COUNT=$(echo "$audit_result" | jq '.metadata.vulnerabilities.total')
