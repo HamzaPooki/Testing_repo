@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  checking_vulnerabilities:                                            
+  reviewing_code:                                       
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
       - name: Check for Vulnerabilities
         run: |
             cd Backend
-            
+            npm install
             audit_result=$(npm audit --json)
             
             VULNERABILITIES_COUNT=$(echo "$audit_result" | jq '.metadata.vulnerabilities.total')
