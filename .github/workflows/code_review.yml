@@ -26,6 +26,6 @@ jobs:
             cd Backend
             ls
             set -e
-            npm audit --json
+            npm audit
             ls
     
