@@ -23,6 +23,8 @@ jobs:
             audit_result=$(npm audit --json)
             
             VULNERABILITIES_COUNT=$(echo "$audit_result" | jq '.metadata.vulnerabilities.total')
+
+            echo $VULNERABILITIES_COUNT
             
             # Check if there are vulnerabilities
             if [[ $VULNERABILITIES_COUNT == 0 ]]; then
@@ -35,12 +37,21 @@ jobs:
               audit_result_after_fix=$(npm audit --json)
             
               VULNERABILITIES_COUNT=$(echo "$audit_result_after_fix" | jq '.metadata.vulnerabilities.total')
+
+              ls
             
               # Check if there are still vulnerabilities
               if [[ $VULNERABILITIES_COUNT == 0 ]]; then
                 echo "Vulnerabilities Fixed."
               else
-                echo -e "Vulnerabilities Found \nTotal: $VULNERABILITIES_COUNT"
+                SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
+                VULNERABILITIES_COUNT=$(echo "$audit_result_after_fix" | jq '.metadata.vulnerabilities.total')
+              
+                curl -X POST -H 'Content-type: application/json' \
+                  --data "{
+                    \"text\": \"*Vulnerabilities Found*\nTotal: $VULNERABILITIES_COUNT\",
+                  }" \
+                  "$SLACK_WEBHOOK_URL"
                 exit 1
               fi
             fi
