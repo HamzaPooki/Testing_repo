@@ -24,7 +24,6 @@ jobs:
       - name: Check for Vulnerabilities
         run: |
             cd Backend
-            npm audit --json > audit-results.json
-            cat audit-results.json
+            npm audit --force
             echo "HELLO"
     
