@@ -15,23 +15,6 @@ jobs:
 
     - name: Install Trivy
       run: |
-name: Trivy Scan
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  trivy_scan:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Install Trivy
-      run: |
         wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_$(uname -m).tar.gz
         tar zxvf trivy_$(uname -s)_$(uname -m).tar.gz
         sudo mv trivy /usr/local/bin/
