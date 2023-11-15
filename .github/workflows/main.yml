@@ -1,4 +1,4 @@
-name: Checkmarx Scan
+name: CodeQL Scan
 
 on:
   push:
@@ -6,25 +6,31 @@ on:
       - main
 
 jobs:
-  checkmarx_scan:
+  codeql_scan:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install Checkmarx CLI
-      run: |
-        wget https://download.checkmarx.com/9.0.0/Plugins/CxConsolePlugin-9.0.0.zip
-        unzip CxConsolePlugin-9.0.0.zip
-        chmod +x CxConsolePlugin-9.0.0/CxConsole*
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: javascript,java  # Adjust based on your project's language
 
-    - name: Run Checkmarx Scan
+    - name: Build and Test
       run: |
-        ./CxConsolePlugin-9.0.0/CxConsole.sh Scan -CxServer https://<Checkmarx_Server>/cxrestapi -CxUser <Your_Username> -CxPassword <Your_Password> -ProjectName MyProject -LocationType folder -LocationPath . -preset Default
+        # Add your build and test commands here
+        # Example for a Node.js project:
+        npm install
+        npm test
+
+    - name: CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
 
     - name: Upload Results
       uses: actions/upload-artifact@v2
       with:
-        name: checkmarx-results
-        path: CxResults.xml
+        name: codeql-results
+        path: ${{ github.workspace }}/codeql-sarif
+
