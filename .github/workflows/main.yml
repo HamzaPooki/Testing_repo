@@ -18,9 +18,6 @@ jobs:
         with:
           node-version: 14
 
-      - name: Install Dependencies
-        run: npm ci
-
       - name: Security Scan with Snyk
         run: snyk test --json > snyk-report.json
 
