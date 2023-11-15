@@ -24,7 +24,13 @@ jobs:
       - name: Check for Vulnerabilities
         run: |
             cd Backend
+            ls
+            npm audit --json
+
+            ls
             audit_result=$(npm audit --json)
+            ls
+            # audit_result=$(npm audit --json)
 
             echo $audit_result
             
