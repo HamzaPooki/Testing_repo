@@ -21,8 +21,9 @@ jobs:
 
     - name: Update ClamAV Database
       run: |
-        sudo systemctl stop clamav-freshclam
-        sudo systemctl stop clamav-daemon
+        pid=$(ps aux | grep '[f]reshclam -d' | awk '{print $2}')
+        echo $pid
+        sudo kill -SIGINT $pid
         sudo freshclam
 
     - name: Run ClamAV scan
