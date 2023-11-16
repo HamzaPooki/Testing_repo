@@ -3,7 +3,7 @@ name: Notify Slack
 on:
   pull_request:
     branches:
-      - main
+      - no-deployment
 
 jobs:
   notify:
