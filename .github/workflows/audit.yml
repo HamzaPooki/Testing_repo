@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  reviewing_code:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +29,9 @@ jobs:
     - name: Run npm audit and generate report
       run: |
         cd Backend
+        curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"*Vulnerabilities Found*\\nTotal: 1\",\"username\": \"NPM Audit Alert\",\"icon_emoji\": \":alert:\"}" \
+            "https://hooks.slack.com/services/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"
         npm audit --json > npm-audit.json
       continue-on-error: true
 
