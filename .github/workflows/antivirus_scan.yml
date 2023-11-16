@@ -17,7 +17,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y clamav
-        sudo rm /var/log/clamav/freshclam.log.lock
+        sudo chown clamav:clamav /var/log/clamav/freshclam.log
+        sudo chmod 644 /var/log/clamav/freshclam.log
 
     - name: Update ClamAV Database
       run: sudo freshclam
