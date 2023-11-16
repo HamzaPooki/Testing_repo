@@ -26,18 +26,21 @@ jobs:
         cd Backend
         npm install
 
-    - name: Run npm audit
+    - name: Run npm audit and generate report
       run: |
         cd Backend
         npm audit --json > npm-audit.json
       continue-on-error: true
 
-    - name: Run tests
+    - name: Extract the vulnerabilities
       run: |
         cd Backend
         RESULT_DATA=$(cat npm-audit.json)
         echo $RESULT_DATA
-        vulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.moderate')
         totalVulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.total')
-        echo $totalVulnerabilitiesCount
-        echo $vulnerabilitiesCount
+        if [ $totalVulnerabilitiesCount -gt 0 ]; then
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"*Vulnerabilities Found*\\nTotal: $totalVulnerabilitiesCount\"}" \
+            "https://hooks.slack.com/services/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"
+          exit 1
+        fi
