@@ -3,7 +3,7 @@ name: Node.js CI
 on:
   pull_request:
     branches:
-      - main
+      - no-deployment
 
 jobs:
   reviewing_code:
