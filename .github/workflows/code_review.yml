@@ -19,4 +19,4 @@ jobs:
         run: |
           result=$(aws lambda invoke --function-name Library_Audit_Integration --log-type Tail /dev/null --query 'Payload' --output text)
           decoded_result=$(echo "$result" | base64 --decode)
-          echo "Decoded Result: $decoded_result"
+          echo "Decoded Result: $result"
