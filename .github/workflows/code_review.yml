@@ -10,11 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Run Lambda function
         id: reviewing_code
         run: |
-          # Run your Lambda function and set the result as an output
-          echo "::set-output name=canMerge::false"
+          # Run your Lambda function and set the result as an environment variable
+          echo "CAN_MERGE=false" >> $GITHUB_ENV
+
+      - name: Set output and finish
+        if: ${{ env.CAN_MERGE == 'true' }}
+        run: echo "Can merge safely!"
