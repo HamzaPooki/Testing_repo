@@ -41,6 +41,6 @@ jobs:
         if [ $totalVulnerabilitiesCount -gt 0 ]; then
           curl -X POST -H 'Content-type: application/json' \
             --data "{\"text\": \"*Vulnerabilities Found*\\nTotal: $totalVulnerabilitiesCount\"}" \
-            "https://hooks.slack.com/services/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"
+            "https://hooks.slack.com/services/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"
           exit 1
         fi
