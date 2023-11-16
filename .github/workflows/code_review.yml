@@ -17,6 +17,6 @@ jobs:
           aws-region: eu-central-1
       - name: Invoke Lambda Function
         run: |
-          result=$(aws lambda invoke --function-name Library_Audit_Integration --log-type Tail /dev/null --query 'LogResult' --output text)
+          result=$(aws lambda invoke --function-name Library_Audit_Integration --log-type Tail /dev/null --query 'Payload' --output text)
           decoded_result=$(echo "$result" | base64 --decode)
           echo "Decoded Result: $decoded_result"
