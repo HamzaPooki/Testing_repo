@@ -18,10 +18,17 @@ jobs:
       with:
         node-version: 14
 
-    - name: Run npm audit
+    - name: Install jq
+      run: sudo apt-get install jq
+
+    - name: Install node_modules
       run: |
         cd Backend
         npm install
+
+    - name: Run npm audit
+      run: |
+        cd Backend
         npm audit --json > npm-audit-report.json
       continue-on-error: true
 
@@ -29,3 +36,6 @@ jobs:
       run: |
         cd Backend
         ls
+        RESULT_DATA=$(cat npm-audit-report.json)
+        VULNERABILITIES_COUNT=$(echo "$RESULT_DATA" | jq '.metadata.vulnerabilities.total')
+        echo $VULNERABILITIES_COUNT
