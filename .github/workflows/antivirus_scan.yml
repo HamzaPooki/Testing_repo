@@ -24,6 +24,7 @@ jobs:
         pid=$(ps aux | grep '[f]reshclam -d' | awk '{print $2}')
         echo $pid
         sudo kill -SIGINT $pid
+        sleep 5
         sudo freshclam
 
     - name: Run ClamAV scan
