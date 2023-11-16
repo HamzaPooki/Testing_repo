@@ -31,7 +31,7 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       run: |
         infected_files=$(clamscan -r --bell -i --log=clamscan.log . | grep "Infected files" | awk '{print $NF}')
-        infected_file_names=$(tail -n +11 clamscan.log | awk -F ":" '{print $1}')
+        infected_file_names=$(grep "FOUND" clamscan.log | awk -F": " '{print $1}')
         if [ $infected_files -gt 0 ]; then
           curl -X POST -H 'Content-type: application/json' --data "{
             \"text\": \"*Infected Files Found*\\nTotal: $infected_files\\nInfected Files: $infected_file_names",
