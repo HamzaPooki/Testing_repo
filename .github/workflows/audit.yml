@@ -41,6 +41,12 @@ jobs:
         echo $RESULT_DATA
         totalVulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.total')
         if [ $totalVulnerabilitiesCount -gt 0 ]; then
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"*Vulnerabilities Found* \nTotal: " + $totalVulnerabilitiesCount + ", "username": "NPM Audit Alert", "icon_emoji": ":alert:"}' $SLACK_WEBHOOK
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+            \"text\": \"*Vulnerabilities Found*\nTotal: $totalVulnerabilitiesCount\",
+            \"username\": \"NPM Audit Alert\",
+            \"icon_emoji\": \":alert:\"
+          }" \ 
+          $SLACK_WEBHOOK
           exit 1
         fi
