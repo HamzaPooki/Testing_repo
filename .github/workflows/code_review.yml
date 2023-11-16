@@ -1,21 +1,19 @@
-name: PR Checks
+name: Status Check
 
 on:
   pull_request:
     branches:
-      - main
+      - development
 
 jobs:
   reviewing_code:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run Lambda function
-        id: reviewing_code
-        run: |
-          # Run your Lambda function and set the result as an environment variable
-          echo "CAN_MERGE=false" >> $GITHUB_ENV
-
-      - name: Set output and finish
-        if: ${{ env.CAN_MERGE == 'true' }}
-        run: echo "Can merge safely!"
+    - name: Check Commits
+      run: |
+        # Check if any commit message contains "Testing"
+        if git log --format=%B -n 1 $GITHUB_SHA | grep -qi "Testing"; then
+          echo "Error: Work in progress commits are not allowed."
+          exit 1
+        fi
