@@ -1,0 +1,31 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+
+    - name: Run npm audit
+      run: |
+        npm audit --json > npm-audit-report.json
+        auditExitCode=$?
+        if [ $auditExitCode -ne 0 ]; then
+          echo "npm audit found vulnerabilities"
+          exit 1
+        fi
+
+    - name: Run tests
+      run: npm test
