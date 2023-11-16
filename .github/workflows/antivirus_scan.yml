@@ -28,15 +28,12 @@ jobs:
 
     - name: Run ClamAV scan
       run: |
-        clamscan -r --bell -i .
-
-    - name: Display scan results
-      run: |
-        clamscan --version
-        clamscan --infected --recursive --exclude-dir=^/sys --exclude-dir=^/proc --exclude-dir=^/dev --exclude-dir=^/run /
-
-    - name: Upload scan results to GitHub
-      uses: actions/upload-artifact@v2
-      with:
-        name: clamav-scan-results
-        path: scan-results
+        infected_files=clamscan -r --bell -i . | grep "Infected files" | awk '{print $NF}'
+        if [ $infected_files -gt 0 ]; then
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"*Infected Files Found*\\nTotal: $infected_files\",
+            \"username\": \"Antivirus Scanning Alert\",
+            \"icon_emoji\": \":alert:\"
+          }" $SLACK_WEBHOOK
+          exit 1
+        fi
