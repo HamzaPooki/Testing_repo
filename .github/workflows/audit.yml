@@ -31,10 +31,6 @@ jobs:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       run: |
         cd Backend
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"*Vulnerabilities Found* \nTotal: 1"}' $SLACK_WEBHOOK
-        # curl -X POST -H 'Content-type: application/json' \
-        #     --data "{\"text\": \"*Vulnerabilities Found*\\nTotal: 1\",\"username\": \"NPM Audit Alert\",\"icon_emoji\": \":alert:\"}" \
-        #     "https://hooks.slack.com/services/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"
         npm audit --json > npm-audit.json
       continue-on-error: true
 
@@ -45,5 +41,6 @@ jobs:
         echo $RESULT_DATA
         totalVulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.total')
         if [ $totalVulnerabilitiesCount -gt 0 ]; then
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"*Vulnerabilities Found* \nTotal: $totalVulnerabilitiesCount", "username": "NPM Audit Alert", "icon_emoji": ":alert:"}' $SLACK_WEBHOOK
           exit 1
         fi
