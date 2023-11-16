@@ -37,5 +37,5 @@ jobs:
         cd Backend
         RESULT_DATA=$(cat npm-audit-report.json)
         echo $RESULT_DATA
-        VULNERABILITIES_COUNT=$(echo "$RESULT_DATA" | jq '.metadata.vulnerabilities.total')
-        echo $VULNERABILITIES_COUNT
+        vulnerabilitiesCount=$(node -e "console.log(Object.keys(JSON.parse(process.argv[1]).advisories).length);" "$jsonData")
+        echo $vulnerabilitiesCount
