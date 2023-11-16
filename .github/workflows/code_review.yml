@@ -3,7 +3,7 @@ name: Status Check
 on:
   pull_request:
     branches:
-      - development
+      - main
 
 jobs:
   reviewing_code:
