@@ -27,14 +27,14 @@ jobs:
         npm install
 
     - name: Run npm audit and generate report
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       run: |
         cd Backend
         npm audit --json > npm-audit.json
       continue-on-error: true
 
     - name: Extract the vulnerabilities
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       run: |
         cd Backend
         RESULT_DATA=$(cat npm-audit.json)
