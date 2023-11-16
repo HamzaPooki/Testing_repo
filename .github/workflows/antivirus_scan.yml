@@ -37,7 +37,7 @@ jobs:
       run: |
         ls
         infected_files=$(grep "Infected files" clamscan.log | awk '{print $NF}')
-        infected_file_names=$(grep "FOUND" clamscan.log | awk -F": " '{print $1}')
+        infected_file_names="TEST"
         if [ $infected_files -gt 0 ]; then
           curl -X POST -H 'Content-type: application/json' --data "{
             \"text\": \"*Infected Files Found*\\nTotal: $infected_files\\nInfected Files: $infected_file_names",
