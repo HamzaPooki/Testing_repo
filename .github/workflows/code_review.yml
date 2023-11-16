@@ -17,5 +17,10 @@ jobs:
           aws-region: eu-central-1
       - name: Invoke Lambda Function
         run: |
-          result=$(aws lambda invoke --function-name Library_Audit_Integration --log-type Tail --query 'Payload' --output text body)
-          ls
+          aws lambda invoke --function-name Library_Audit_Integration --log-type Tail --query 'Payload' --output text result.txt
+
+      - name: Read data from result.txt and save in a variable
+        id: read_result
+        run: |
+          RESULT_DATA=$(cat result.txt)
+          echo "Result Data: $RESULT_DATA"
