@@ -41,6 +41,6 @@ jobs:
         if [ $totalVulnerabilitiesCount -gt 0 ]; then
           curl -X POST -H 'Content-type: application/json' \
             --data "{\"text\": \"*Vulnerabilities Found*\\nTotal: $totalVulnerabilitiesCount\",\"username\": \"NPM Audit Alert\",\"icon_emoji\": \":alert:\"}" \
-            "https://hooks.slack.com/services/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"
+            "https://hooks.slack.com/services/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"
           exit 1
         fi
