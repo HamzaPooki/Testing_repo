@@ -35,7 +35,7 @@ jobs:
     - name: Run tests
       run: |
         cd Backend
-        RESULT_DATA=$(cat npm-audit-report.json)
+        RESULT_DATA=$(cat npm-audit.json)
         echo $RESULT_DATA
         vulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.moderate')
         totalVulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.total')
