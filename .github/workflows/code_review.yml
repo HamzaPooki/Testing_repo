@@ -2,7 +2,7 @@ name: CI/CD with Lambda
 on:
   pull_request:
     branches:
-      - main
+      - no-deployment
 jobs:
   reviewing_code:
     runs-on: ubuntu-latest
