@@ -12,8 +12,5 @@ jobs:
     steps:
     - name: Check Commits
       run: |
-        # Check if any commit message contains "Testing"
-        if git log --format=%B -n 1 $GITHUB_SHA | grep -qi "Testing"; then
-          echo "Error: Work in progress commits are not allowed."
-          exit 1
-        fi
+        echo "Error: Work in progress commits are not allowed."
+        exit 1
