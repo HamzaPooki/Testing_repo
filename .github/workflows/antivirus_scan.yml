@@ -20,7 +20,10 @@ jobs:
         sudo chown -R clamav:clamav /var/lib/clamav
 
     - name: Update ClamAV Database
-      run: sudo freshclam
+      run: |
+        sudo systemctl stop clamav-freshclam
+        sudo systemctl stop clamav-daemon
+        sudo freshclam
 
     - name: Run ClamAV scan
       run: |
