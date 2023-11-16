@@ -27,6 +27,8 @@ jobs:
         npm install
 
     - name: Run npm audit and generate report
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       run: |
         cd Backend
         curl -X POST -H 'Content-type: application/json' --data '{"text":"*Vulnerabilities Found* \nTotal: 1"}' $SLACK_WEBHOOK
