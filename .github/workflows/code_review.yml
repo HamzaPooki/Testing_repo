@@ -1,29 +1,20 @@
-name: Code Review Workflow
+name: PR Checks
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  reviewing_code:                                       
+  check:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the Github Repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Install jq
-        run: sudo apt-get install jq
-
-      - name: Install node_modules
+      - name: Run Lambda function
+        id: run-lambda
         run: |
-            cd Backend
-            npm install
-
-      - name: Check for Vulnerabilities
-        run: |
-            cd Backend
-            npm audit --force
-            echo "HELLO"
-    
+          # Run your Lambda function and set the result as an output
+          echo "::set-output name=canMerge::false"
