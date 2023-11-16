@@ -27,10 +27,14 @@ jobs:
         sudo freshclam
 
     - name: Run ClamAV scan
+      run: |
+        clamscan -r --bell -i --log=clamscan.log .
+      continue-on-error: true
+
+    - name: Extract the infected files
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       run: |
-        clamscan -r --bell -i --log=clamscan.log .
         ls
         infected_files=$(grep "Infected files" clamscan.log | awk '{print $NF}')
         infected_file_names=$(grep "FOUND" clamscan.log | awk -F": " '{print $1}')
