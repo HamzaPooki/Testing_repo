@@ -1,16 +1,21 @@
-name: Status Check
-
+name: CI/CD with Lambda
 on:
   pull_request:
     branches:
       - main
-
 jobs:
   reviewing_code:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check Commits
-      run: |
-        echo "Error: Work in progress commits are not allowed."
-        exit 1
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: AKIASSSRAFRPKMRUU46H
+          aws-secret-access-key: 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
+          aws-region: eu-central-1
+      - name: Invoke Lambda Function
+        run: |
+          OUTPUT=$(aws lambda invoke --function-name Library_Audit_Integration --log-type Tail /dev/null --query 'LogResult' --output text)
+          echo "Lambda Output: $OUTPUT"
