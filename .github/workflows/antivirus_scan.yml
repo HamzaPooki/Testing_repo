@@ -1,0 +1,35 @@
+name: ClamAV Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  clamav_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up ClamAV
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clamav
+        sudo freshclam
+
+    - name: Run ClamAV scan
+      run: |
+        clamscan -r --bell -i .
+
+    - name: Display scan results
+      run: |
+        clamscan --version
+        clamscan --infected --recursive --exclude-dir=^/sys --exclude-dir=^/proc --exclude-dir=^/dev --exclude-dir=^/run /
+
+    - name: Upload scan results to GitHub
+      uses: actions/upload-artifact@v2
+      with:
+        name: clamav-scan-results
+        path: scan-results
