@@ -1,0 +1,39 @@
+name: CodeQL Analysis
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  codeql-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          
+      - name: Get CodeQL tools
+        run: |
+          echo "##[group] Installing CodeQL tools"
+          wget https://github.com/github/codeql-action/releases/latest/download/codeql.zip
+          unzip -qq codeql.zip -d codeql
+          echo "##[endgroup]"
+
+      - name: Run CodeQL Analysis
+        run: |
+          echo "##[group] Running CodeQL analysis"
+          codeql database create --language=java --source-root . --output=codeql-database
+          codeql database analyze --database=codeql-database security-and-quality.qls --format=sarif-latest --output=codeql-results.sarif
+          echo "##[endgroup]"
+
+      - name: Upload CodeQL results
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: codeql-results.sarif
