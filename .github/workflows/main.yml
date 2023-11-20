@@ -22,7 +22,8 @@ jobs:
       - name: Get CodeQL tools
         run: |
           echo "##[group] Installing CodeQL tools"
-          wget https://github.com/github/codeql-action/releases/latest/download/codeql.zip
+          DOWNLOAD_URL=$(curl -s https://api.github.com/repos/github/codeql-action/releases/latest | jq -r '.assets[] | select(.name | endswith("codeql.zip")) | .browser_download_url')
+          wget "$DOWNLOAD_URL" -O codeql.zip
           unzip -qq codeql.zip -d codeql
           echo "##[endgroup]"
 
