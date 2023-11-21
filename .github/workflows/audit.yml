@@ -1,0 +1,50 @@
+name: NPM Audit Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  reviewing_code:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Install jq
+      run: sudo apt-get install jq
+
+    - name: Install node_modules
+      run: |
+        cd Backend
+        npm install
+
+    - name: Run npm audit and generate report
+      run: |
+        cd Backend
+        npm audit --json > npm-audit.json
+      continue-on-error: true
+
+    - name: Extract the vulnerabilities
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      run: |
+        cd Backend
+        RESULT_DATA=$(cat npm-audit.json)
+        echo $RESULT_DATA
+        totalVulnerabilitiesCount=$(echo $RESULT_DATA | jq '.metadata.vulnerabilities.total')
+        if [ $totalVulnerabilitiesCount -gt 0 ]; then
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"text\": \"*Vulnerabilities Found*\\nTotal: $totalVulnerabilitiesCount\",
+            \"username\": \"NPM Audit Alert\",
+            \"icon_emoji\": \":alert:\"
+          }" $SLACK_WEBHOOK
+          exit 1
+        fi
