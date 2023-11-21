@@ -38,7 +38,7 @@ const checkToken = async (req, res, next) => {
         })
     }
 };
-
+console.log('1')
 module.exports = {
     checkToken: checkToken,
 };
